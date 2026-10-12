@@ -50,6 +50,24 @@
         "修复了 province 拼写错误（如果出现）",
         "修复后的 add_ideas 引用的 idea 均在 ideas 文件中定义"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "我在给一个大型改版模组「海陆空三军设计」（tristar_design，它扩展了大量自定义装备原型与专属科技类别，本地路径形如 文档/Paradox Interactive/Hearts of Iron IV/mod/tristar_design）做一个兼容子模组，子模组文件夹名请用 ASCII（例如 chuangji_heavy_industry）。请帮我写：(1) 一个『仅玩家可用』的军工组织（MIO），命名为『创纪重工』，要求覆盖主机模组新增的坦克/飞机/舰船原型，并给一套合理的初始特质加成；(2) 两个显示在内政页面、各消耗 150 政治点、仅玩家可用的国家工业集团（industrial_concern 理念），命名为『创纪重工民工集团』与『创纪重工军工集团』，并按名字给对应方向的加成。同时给出 descriptor.mod 与 .mod 注册文件（声明前置依赖）、中英双语 localisation，以及一份 README 说明安装与设计数值。所有引用主机模组的 token 必须真实存在。",
+      "expected_output": "可加载的兼容式子模组：descriptor.mod + .mod（含 dependencies 声明前置）+ 一个 MIO 组织文件 + 一个含两个 industrial_concern 公司的 ideas 文件 + 中英双语 localisation + README，全部引用经交叉核验存在。",
+      "expectations": [
+        "输出 MIO 组织文件，顶层块键为 MIO token，含 name / icon / allowed / available / ai_will_do / equipment_type / research_categories / initial_trait",
+        "玩家专属 MIO 使用 available = { owner = { is_ai = no } } 与 ai_will_do = { base = 0 }（而非把动态条件写进 allowed）",
+        "MIO 的 allowed 含 DLC 门槛 has_dlc = \"Arms Against Tyranny\"",
+        "MIO 的 equipment_type 引用了主机模组新增的装备原型/装备组，且这些 token 真实存在于主机模组或原版（无悬空引用）",
+        "MIO 的 research_categories 引用的科技类别均真实存在（含主机模组专属类别）",
+        "输出 ideas 文件，顶层键为 industrial_concern，含两个公司块",
+        "两个公司均有 cost = 150、available = { is_ai = no }、ai_will_do = { factor = 0 }、traits = { industrial_concern }",
+        "『民工集团』的 modifier 偏民用方向（建造/生活消费品/基建/资源），『军工集团』偏军工方向（industrial_capacity_factory / 军工厂与船厂建造速度 / 产能效率），二者加成方向可区分",
+        "descriptor.mod 含 supported_version，且 .mod 注册文件含 path；dependencies 声明了前置模组「海陆空三军设计」",
+        "采用零覆盖策略：所有新增数据文件不使用与主机模组同名的文件名，也未写 replace_path",
+        "localisation 覆盖 MIO 名、初始特质、两个公司名及 _desc，且 .yml 为 UTF-8 带 BOM（格式 key:0 \"...\"）"
+      ]
     }
   ]
 }
